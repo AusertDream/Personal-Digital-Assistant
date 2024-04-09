@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/drawerLayout"
+    android:orientation="vertical"
+    tools:openDrawer="start"
+    >
+
+    <!--主界面-->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_constrainlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+
+
+
+
+        <!--bot照片-->
+
+        <ImageView
+            android:id="@+id/botImage"
+            android:layout_width="384dp"
+            android:layout_height="629dp"
+            android:contentDescription="@string/bgDescription"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.365"
+            app:srcCompat="@drawable/bot"
+            tools:visibility="gone" />
+
+
+        <!--进入按钮-->
+        <Button
+            android:id="@+id/linkStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/enterButtonText"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.828"
+            tools:visibility="gone" />
+
+
+        <!--大标题-->
+        <TextView
+            android:id="@+id/intro_title"
+            android:layout_width="335dp"
+            android:layout_height="102dp"
+            android:rotation="0"
+            android:rotationX="-23"
+            android:rotationY="0"
+            android:text="@string/title"
+            android:textAlignment="center"
+            android:textSize="48sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.064"
+            tools:visibility="gone" />
+
+        <!--导航栏背景-->
+        <LinearLayout
+            android:id="@+id/navigation_bar_background"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@color/littleGreen"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <!--更多功能按钮-->
+        <ImageView
+            android:id="@+id/button_more"
+            android:layout_width="69dp"
+            android:layout_height="48dp"
+            android:contentDescription="@string/button_more"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/more_black"
+            tools:visibility="visible" />
+
+        <!--更多功能按钮提示语-->
+        <TextView
+            android:id="@+id/introInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/introInfo"
+            android:textSize="20sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.317"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.009"
+            tools:visibility="gone" />
+
+        <!--聊天框布局-->
+        <LinearLayout
+            android:id="@+id/talkLayout"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:background="@color/littleGrey"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1"
+            tools:visibility="gone">
+
+            <!--聊天框-->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/chatView_WithBot"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="6"
+                android:padding="8dp" />
+
+            <!--发送界面-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <!--输入框-->
+                <EditText
+                    android:id="@+id/multilineEditText_WithBot"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:autofillHints="@string/default_sendmessage"
+                    android:ems="10"
+                    android:gravity="start|top"
+                    android:hint="@string/default_sendmessage"
+                    android:inputType="textMultiLine"
+                    tools:ignore="NestedWeights" />
+
+                <!--发送按钮-->
+                <Button
+                    android:id="@+id/sendButton_WithBot"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/send" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!--侧滑栏-->
+    <LinearLayout
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:orientation="vertical"
+        android:background="@color/littleGrey"
+        >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/nav_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"/>
+
+
+
+
+
+    </LinearLayout>
+
+
+</androidx.drawerlayout.widget.DrawerLayout>
+

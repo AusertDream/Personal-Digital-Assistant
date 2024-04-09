@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sideBar">
+        <item>日程表</item>
+        <item>个人日志</item>
+        <item>ChatGPT3.5</item>
+        <item>收支记录</item>
+        <item>拍照识别</item>
+        <item>设置</item>
+    </string-array>
+</resources>

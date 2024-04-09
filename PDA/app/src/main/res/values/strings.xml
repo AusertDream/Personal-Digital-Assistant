@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">PDA</string>
+    <string name="ERROR1">objectCreateError</string>
+    <string name="ERROR2">mediaPlayError</string>
+    <string name="title">个人数字助手</string>
+    <string name="enterButtonText">Link Start!</string>
+    <string name="bgDescription">backgroundImage</string>
+    <string name="button_more">button_more</string>
+    <string name="default_text">欢迎使用个人数字助手，我叫bot</string>
+    <string name="introInfo">←更多功能点这里</string>
+    <string name="send">发送</string>
+    <string name="default_sendmessage">开始和bot聊天吧!</string>
+</resources>
