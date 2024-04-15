@@ -1,10 +1,12 @@
 package com.example.pda.adapter;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,7 +37,23 @@ public class NavAdapter extends RecyclerView.Adapter<NavAdapter.ViewHolder>{
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.nav_item_layout,parent,false);
-        return new ViewHolder(view);
+        ViewHolder viewHolder = new ViewHolder(view);
+        //按钮点击事件
+        viewHolder.nav_item_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String clickedContent = viewHolder.nav_item_button.getText().toString();
+                if(clickedContent.equals("手账")){
+                    //跳转到手账页面
+                    Intent intent = new Intent(v.getContext(), com.example.pda.TallyBook.class);
+                    v.getContext().startActivity(intent);
+                }
+                else {
+                    Toast.makeText(v.getContext(), "这个还没做（", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        return viewHolder;
     }
 
     @Override

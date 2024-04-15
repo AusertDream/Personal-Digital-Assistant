@@ -23,6 +23,7 @@ import java.util.Date;
 import com.example.pda.adapter.ChatAdapter;
 import com.example.pda.adapter.NavAdapter;
 import com.example.pda.entity.Message_WithBot;
+import com.example.pda.utils.FormatedTime;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
     ChatAdapter chatadapter;//与bot的聊天适配器
     LinearLayout nav_item_layout; //导航栏布局
     RecyclerView nav_recycler_view; //导航栏列表布局
-
 
 
 
@@ -100,8 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 //获取输入框的内容
                 String inputText = inputText_WithBot.getText().toString();
                 //获取当前时间
-                Date curDate = new Date();
-                String curTime = formatTime(curDate);
+                String curTime = new FormatedTime().getFormatedTime(1);
                 if(!inputText.equals("")) {
                     //将消息添加进messageList中
                     Message_WithBot new_message = new Message_WithBot(inputText, curTime, "user");
@@ -111,8 +110,7 @@ public class MainActivity extends AppCompatActivity {
                     //调用GPT接口，获得回复
                     String botResponse = getChatResponse(inputText);
                     //将回复添加进messageList中
-                    curDate=new Date();
-                    curTime = formatTime(curDate);
+                    curTime = new FormatedTime().getFormatedTime(1);
                     Message_WithBot bot_message = new Message_WithBot(botResponse, curTime, "bot");
                     messageList.add(bot_message);
                     chatadapter.notifyItemInserted(messageList.size() - 1);
@@ -147,12 +145,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
     //格式化时间
-    public String formatTime(Date date){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        //时间增加8小时UTF+8
-        date.setTime(date.getTime()+8*60*60*1000);
-        return sdf.format(date);
-    }
+
 
     public void initEnterLayout(){
         //顶部title文字消失
@@ -172,8 +165,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void initChatRecord(){
         //bot初始信息添加进messagelist中去
-        Date curDate = new Date();
-        String curTime = formatTime(curDate);
+        String curTime = new FormatedTime().getFormatedTime(1);
         Message_WithBot default_message = new Message_WithBot("你好，我叫bot，有什么可以帮助你的吗？",curTime,"bot");
         messageList.add(default_message);
         //设置聊天框的布局管理器,设置itemlayout上下文是当前布局，从而显示内容。
@@ -221,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
         //设置导航栏布局管理器
         LinearLayoutManager nav_item_layout_manager = new LinearLayoutManager(mContext);
         nav_recycler_view.setLayoutManager(nav_item_layout_manager);
-
+        //配置适配器
         NavAdapter navAdapter = new NavAdapter(nav_item_list);
         nav_recycler_view.setAdapter(navAdapter);
 

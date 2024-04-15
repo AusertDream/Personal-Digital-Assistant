@@ -5,4 +5,7 @@
     <color name="littleGreen">#aacca7</color>
     <color name="littleGrey">#f0f0ed</color>
     <color name="littleGrey_30alpha">#30f0f0ed</color>
+    <color name="red">#FFFF0000</color>
+    <color name="green">#FF00FF00</color>
+    <color name="blue">#405fed</color>
 </resources>
