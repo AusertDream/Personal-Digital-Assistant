@@ -1,5 +1,8 @@
 package com.example.pda;
 
+import static android.os.SystemClock.sleep;
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -27,6 +30,7 @@ import com.example.pda.adapter.TallyExpenseAdapter;
 import com.example.pda.adapter.TallyIncomeAdapter;
 import com.example.pda.entity.TallyRecord;
 import com.example.pda.utils.FormatedTime;
+import com.example.pda.utils.TallyInfoDialog;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.w3c.dom.Text;
@@ -50,12 +54,6 @@ public class TallyBook extends AppCompatActivity {
     TextView tv_expense; //支出总额
     TextView tv_balance; //结余
     TextView tv_comment;//Ray评
-    EditText tallyTitleInput; //手动添加记录标题输入框
-    EditText tallyAmountInput; //手动添加记录金额输入框
-    EditText tallyTimeInput; //手动添加记录时间输入框
-    TextView addRecordHelp; //添加记录辅助文本
-    Button addCancelButton; //添加记录取消按钮
-    Button addVerifyButton; //添加记录确认按钮
 
     //TallyRecord
     ArrayList<TallyRecord> incomeRecordList = new ArrayList<>();
@@ -64,6 +62,8 @@ public class TallyBook extends AppCompatActivity {
     double income = 0;//总收入
     double expense = 0;//总支出
     double balance = 0;//结余
+    TallyIncomeAdapter incomeAdapter;//收入适配器
+    TallyExpenseAdapter expenseAdapter;//支出适配器
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,28 +158,60 @@ public class TallyBook extends AppCompatActivity {
         incomeRecyclerView.setLayoutManager(layoutManagerLeft);
         LinearLayoutManager layoutManagerRight = new LinearLayoutManager(this);
         expenseRecyclerView.setLayoutManager(layoutManagerRight);
-        TallyIncomeAdapter incomeAdapter = new TallyIncomeAdapter(incomeRecordList);
+        incomeAdapter = new TallyIncomeAdapter(incomeRecordList);
         incomeRecyclerView.setAdapter(incomeAdapter);
-        TallyExpenseAdapter expenseAdapter = new TallyExpenseAdapter(expenseRecordList);
+        expenseAdapter = new TallyExpenseAdapter(expenseRecordList);
         expenseRecyclerView.setAdapter(expenseAdapter);
     }
     void initTallyRecord(){
         //TODO 从数据库获取数据
 
-
-        //TODO 计算当前数组内存放的所有记录的支出情况
-        calIncomeAndExpense();
+        //初始化总收支
+        initIncomeAndExpense();
     }
 
-    void calIncomeAndExpense(){
-        //TODO 计算当前数组内存放的所有记录的支出情况
+    void initIncomeAndExpense(){
+        //初始化总收支
+        for(TallyRecord record:incomeRecordList){
+            income+=record.getAmount();
+        }
+        for(TallyRecord record:expenseRecordList){
+            expense+=record.getAmount();
+        }
+        balance = income+expense;
+        showIncomeAndExpense(0,0);
 
-        String incomeStr = "收入 ￥ "+income;
-        String expenseStr = "支出 ￥ "+expense;
-        String balanceStr = "结余 ￥ "+balance;
-        tv_income.setText(incomeStr);
-        tv_expense.setText(expenseStr);
-        tv_balance.setText(balanceStr);
+    }
+    //mode = 0 is just show, mode = 1 is income, mode = 2 is expense
+    void showIncomeAndExpense(double amount,int mode){
+        if(mode==0){
+            String incomeStr = "收入 ￥ "+income;
+            String expenseStr = "支出 ￥ "+(-expense);
+            String balanceStr = "结余 ￥ "+balance;
+            tv_income.setText(incomeStr);
+            tv_expense.setText(expenseStr);
+            tv_balance.setText(balanceStr);
+        }
+        else if(mode==1){
+            income+=amount;
+            balance+=amount;
+            String incomeStr = "收入 ￥ "+income;
+            String expenseStr = "支出 ￥ "+(-expense);
+            String balanceStr = "结余 ￥ "+balance;
+            tv_income.setText(incomeStr);
+            tv_expense.setText(expenseStr);
+            tv_balance.setText(balanceStr);
+        }
+        else if(mode==2){
+            expense+=amount;
+            balance+=amount;
+            String incomeStr = "收入 ￥ "+income;
+            String expenseStr = "支出 ￥ "+(-expense);
+            String balanceStr = "结余 ￥ "+balance;
+            tv_income.setText(incomeStr);
+            tv_expense.setText(expenseStr);
+            tv_balance.setText(balanceStr);
+        }
         if(balance<0&&balance>-1000){
             tv_comment.setText("有点小透支了");
         }
@@ -195,65 +227,43 @@ public class TallyBook extends AppCompatActivity {
     }
 
     void showAddTallyRecord(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("添加一条记录");
-        View view = LayoutInflater.from(this).inflate(R.layout.add_tally_record_dialog_layout,null);
-        builder.setView(view);
+        TallyInfoDialog mydialog = new TallyInfoDialog(this);
+        mydialog.show();
+        TallyRecord record = new TallyRecord();
+        //设置监听器当窗口关闭的时候获取其中的内容
+        mydialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if(!mydialog.isEmpty()) {
+                    //获取内容
+                     record.setTitle(mydialog.getTitle());
+                     record.setAmount(mydialog.getAmount());
 
-        tallyTitleInput = view.findViewById(R.id.tallyTitleInput);
-        tallyAmountInput = view.findViewById(R.id.tallyAmountInput);
-        tallyTimeInput = view.findViewById(R.id.tallyTimeInput);
-        addRecordHelp = view.findViewById(R.id.help);
-        addCancelButton = view.findViewById(R.id.addCancelButton);
-        addVerifyButton = view.findViewById(R.id.addVerifyButton);
-        //TODO 继承AlertDialog，重写一个新的dialog类
-        builder.setPositiveButton("确定",(dialog, which) -> {
-            Editable title = tallyTitleInput.getText();
-            Editable amount = tallyAmountInput.getText();
-            Editable time = tallyTimeInput.getText();
-            //合法性检查
-            if(checkTallyRecordInput(title,amount,time)){
-
-            }
-            else{
-                AlertDialog.Builder alert = new AlertDialog.Builder(this);
-                alert.setTitle("错误");
-                alert.setMessage("输入不合法，请检查输入除了时间外是否为空，或者金额是否合法");
-                alert.setPositiveButton("确定",null);
-                alert.show();
+                     if(mydialog.getTime().isEmpty()){
+                         record.setTime("Unknown Time");
+                     }
+                     else{
+                         record.setTime(mydialog.getTime());
+                     }
+                     //分类处理
+                     if (record.getAmount() > 0) {
+                         incomeRecordList.add(record);
+                         incomeAdapter.notifyItemInserted(incomeRecordList.size() - 1);
+                         incomeRecyclerView.scrollToPosition(incomeRecordList.size() - 1);
+                         showIncomeAndExpense(record.getAmount(),1);
+                     } else if (record.getAmount() < 0) {
+                         expenseRecordList.add(record);
+                         expenseAdapter.notifyItemInserted(expenseRecordList.size() - 1);
+                         expenseRecyclerView.scrollToPosition(expenseRecordList.size() - 1);
+                         showIncomeAndExpense(record.getAmount(),2);
+                     } else {
+                         Toast.makeText(TallyBook.this, "金额不能为0", Toast.LENGTH_SHORT).show();
+                     }
+                }
             }
         });
-        builder.setNegativeButton("取消",null);
-        AlertDialog dialog = builder.create();
-        dialog.show();
+
     }
 
-    boolean checkTallyRecordInput(Editable title, Editable amount, Editable time){
-        //检查是否非空
-        if(title.length()==0||amount.length()==0){
-            return false;
-        }
-        String amountStr = amount.toString();
-        //检查金额是否合法
-        boolean amountIsLegal = true;
-        int cntDot = 0;
-        for(int i=0;i<amountStr.length();i++){
-            if(amountStr.charAt(i)=='.'){
-                cntDot++;
-            }
-            if(amountStr.charAt(i)!='-'||amountStr.charAt(i)!='.'||!(amountStr.charAt(i)>='0'&&amountStr.charAt(i)<='9')){
-                amountIsLegal = false;
-                break;
-            }
-            if(cntDot>1){
-                amountIsLegal = false;
-                break;
-            }
-            if(amountStr.charAt(i)=='-'&&i!=0){
-                amountIsLegal = false;
-                break;
-            }
-        }
-        return amountIsLegal;
-    }
+
 }

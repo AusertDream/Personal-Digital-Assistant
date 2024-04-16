@@ -61,12 +61,6 @@
             />
 
     </LinearLayout>
-    <TextView
-        android:id="@+id/help"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:visibility="gone"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -82,9 +76,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="确认"/>
-
-
     </LinearLayout>
+    <TextView
+        android:id="@+id/help"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:visibility="gone"/>
 </LinearLayout>
 
 

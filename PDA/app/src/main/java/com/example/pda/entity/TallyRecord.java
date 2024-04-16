@@ -36,5 +36,9 @@ public class TallyRecord {
     public void setTime(String time) {
         this.time = time;
     }
+
+    public boolean isEmpty(){
+        return title.equals("")||amount==0.0;
+    }
 }
 

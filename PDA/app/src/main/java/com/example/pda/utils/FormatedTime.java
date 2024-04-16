@@ -9,7 +9,7 @@ public class FormatedTime {
     public FormatedTime(){
         //时间增加8小时UTF+8
         //+5000校准时间
-        date.setTime(date.getTime()+8*60*60*1000+5000);
+        date.setTime(date.getTime()+8*60*60*1000);
     }
     private String formatTime(Date date,int mode){
         String time;
