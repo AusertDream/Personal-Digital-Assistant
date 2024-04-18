@@ -2,6 +2,9 @@ package com.example.pda;
 
 import static android.os.SystemClock.sleep;
 
+import static java.lang.Math.abs;
+
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -64,6 +67,7 @@ public class TallyBook extends AppCompatActivity {
     double balance = 0;//结余
     TallyIncomeAdapter incomeAdapter;//收入适配器
     TallyExpenseAdapter expenseAdapter;//支出适配器
+    Context mContext = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +132,7 @@ public class TallyBook extends AppCompatActivity {
                 showAddTallyRecord();
             }
         });
+
     }
 
 
@@ -160,8 +165,46 @@ public class TallyBook extends AppCompatActivity {
         expenseRecyclerView.setLayoutManager(layoutManagerRight);
         incomeAdapter = new TallyIncomeAdapter(incomeRecordList);
         incomeRecyclerView.setAdapter(incomeAdapter);
+        incomeAdapter.setOnItemClickListener(new TallyIncomeAdapter.OnItemClickListener() {
+            @Override
+            public void onDeleteClick(int position) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle("警告");
+                builder.setMessage("确定删除这条记录吗？");
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        TallyRecord tmp = incomeRecordList.get(position);
+                        showIncomeAndExpense(tmp.getAmount(),3);
+                        incomeRecordList.remove(position);
+                        incomeAdapter.notifyItemRemoved(position);
+                    }
+                });
+                builder.setNegativeButton("取消",null);
+                builder.show();
+            }
+        });
         expenseAdapter = new TallyExpenseAdapter(expenseRecordList);
         expenseRecyclerView.setAdapter(expenseAdapter);
+        expenseAdapter.setOnItemClickListener(new TallyExpenseAdapter.OnItemClickListener() {
+            @Override
+            public void onDeleteClick(int position) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle("警告");
+                builder.setMessage("确定删除这条记录吗？");
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        TallyRecord tmp = expenseRecordList.get(position);
+                        showIncomeAndExpense(tmp.getAmount(),4);
+                        expenseRecordList.remove(position);
+                        expenseAdapter.notifyItemRemoved(position);
+                    }
+                });
+                builder.setNegativeButton("取消",null);
+                builder.show();
+            }
+        });
     }
     void initTallyRecord(){
         //TODO 从数据库获取数据
@@ -182,36 +225,41 @@ public class TallyBook extends AppCompatActivity {
         showIncomeAndExpense(0,0);
 
     }
-    //mode = 0 is just show, mode = 1 is income, mode = 2 is expense
+    /*
+        mode=0:用于初始化的时候显示总收支
+        mode=1:用于添加收入时显示总收支
+        mode=2:用于添加支出时显示总收支
+        mode=3:用于删除收入时显示总收支
+        mode=4:用于删除支出时显示总收支
+     */
     void showIncomeAndExpense(double amount,int mode){
         if(mode==0){
-            String incomeStr = "收入 ￥ "+income;
-            String expenseStr = "支出 ￥ "+(-expense);
-            String balanceStr = "结余 ￥ "+balance;
-            tv_income.setText(incomeStr);
-            tv_expense.setText(expenseStr);
-            tv_balance.setText(balanceStr);
+            //do nothing
         }
         else if(mode==1){
             income+=amount;
             balance+=amount;
-            String incomeStr = "收入 ￥ "+income;
-            String expenseStr = "支出 ￥ "+(-expense);
-            String balanceStr = "结余 ￥ "+balance;
-            tv_income.setText(incomeStr);
-            tv_expense.setText(expenseStr);
-            tv_balance.setText(balanceStr);
         }
         else if(mode==2){
             expense+=amount;
             balance+=amount;
-            String incomeStr = "收入 ￥ "+income;
-            String expenseStr = "支出 ￥ "+(-expense);
-            String balanceStr = "结余 ￥ "+balance;
-            tv_income.setText(incomeStr);
-            tv_expense.setText(expenseStr);
-            tv_balance.setText(balanceStr);
         }
+        else if(mode==3){
+            income-=amount;
+            balance-=amount;
+        }
+        else if(mode==4){
+            expense-=amount;
+            balance-=amount;
+        }
+
+        String incomeStr = "收入 ￥ "+income;
+        String expenseStr = "支出 ￥ "+abs(expense);
+        String balanceStr = "结余 ￥ "+balance;
+        tv_income.setText(incomeStr);
+        tv_expense.setText(expenseStr);
+        tv_balance.setText(balanceStr);
+
         if(balance<0&&balance>-1000){
             tv_comment.setText("有点小透支了");
         }
