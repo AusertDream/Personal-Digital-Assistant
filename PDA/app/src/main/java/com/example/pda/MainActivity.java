@@ -144,8 +144,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-    //格式化时间
-
 
     public void initEnterLayout(){
         //顶部title文字消失
@@ -202,7 +200,6 @@ public class MainActivity extends AppCompatActivity {
     public void initNavigation(){
         //列表内容
         ArrayList<String> nav_item_list = new ArrayList<>();
-        nav_item_list.add("主页");
         nav_item_list.add("日程表");
         nav_item_list.add("手账");
         nav_item_list.add("个人日志");

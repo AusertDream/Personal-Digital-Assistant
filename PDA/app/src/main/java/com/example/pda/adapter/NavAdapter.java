@@ -48,6 +48,11 @@ public class NavAdapter extends RecyclerView.Adapter<NavAdapter.ViewHolder>{
                     Intent intent = new Intent(v.getContext(), com.example.pda.TallyBook.class);
                     v.getContext().startActivity(intent);
                 }
+                else if(clickedContent.equals("日程表")){
+                    //跳转到日程表界面
+                    Intent intent = new Intent(v.getContext(),com.example.pda.agenda.class);
+                    v.getContext().startActivity(intent);
+                }
                 else {
                     Toast.makeText(v.getContext(), "这个还没做（", Toast.LENGTH_SHORT).show();
                 }

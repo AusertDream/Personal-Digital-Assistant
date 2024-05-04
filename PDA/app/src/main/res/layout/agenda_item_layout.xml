@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/agenda_item_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+    <TextView
+        android:id="@+id/agendaShowTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_marginRight="3dp"
+        android:ems="3"
+        android:text="时间"
+        android:gravity="right"
+        android:textSize="12dp" />
+    <LinearLayout
+        android:id="@+id/id_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+        <View
+            android:id="@+id/id_line_top"
+            android:layout_width="1dp"
+            android:layout_height="20dp"
+            android:background="@color/grey"
+            />
+        <ImageView
+            android:id="@+id/id_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:src="@drawable/dot" />
+        <View
+            android:id="@+id/id_line_bottom"
+            android:layout_width="1dp"
+            android:layout_height="20dp"
+            android:background="@color/grey"
+            />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/agendaDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="3dp"
+        android:text="内容"
+        android:textSize="12dp" />
+</LinearLayout>

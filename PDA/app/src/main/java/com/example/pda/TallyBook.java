@@ -47,6 +47,7 @@ public class TallyBook extends AppCompatActivity {
     ImageView backButton;//返回按钮
     LinearLayout changeTimeGroup; //收支查询调整时间按钮
     TextView timeText; //时间文本显示
+    ImageView timeMore;//时间选择按钮
     SwitchCompat startAutoTallySwitch; //自动记账开关
     ImageView addButton; //手动添加账单按钮
     RecyclerView incomeRecyclerView; //收入列表
@@ -132,6 +133,19 @@ public class TallyBook extends AppCompatActivity {
                 showAddTallyRecord();
             }
         });
+        //收支查询调整时间
+        timeText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeTallyTime();
+            }
+        });
+        timeMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeTallyTime();
+            }
+        });
 
     }
 
@@ -151,7 +165,7 @@ public class TallyBook extends AppCompatActivity {
         tv_expense = findViewById(R.id.tv_expense);
         tv_balance = findViewById(R.id.tv_balance);
         tv_comment = findViewById(R.id.tv_comment);
-
+        timeMore = findViewById(R.id.timeMore);
     }
     void setAutoTally(boolean isAutoTally){
         //TODO:设置自动记账功能
@@ -313,5 +327,9 @@ public class TallyBook extends AppCompatActivity {
 
     }
 
+    void changeTallyTime(){
+        Toast.makeText(mContext, "还没做", Toast.LENGTH_SHORT).show();
+        //TODO 改变账单时间范围
 
+    }
 }

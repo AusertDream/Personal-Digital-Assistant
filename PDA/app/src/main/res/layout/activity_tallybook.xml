@@ -70,6 +70,7 @@
                 android:textSize="25sp" />
 
             <ImageView
+                android:id="@+id/timeMore"
                 android:layout_width="25dp"
                 android:layout_height="match_parent"
                 android:src="@drawable/pulldown_black" />

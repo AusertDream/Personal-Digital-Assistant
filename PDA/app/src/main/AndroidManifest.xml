@@ -13,6 +13,9 @@
         android:theme="@style/Theme.PDA"
         tools:targetApi="31">
         <activity
+            android:name=".agenda"
+            android:exported="false" />
+        <activity
             android:name=".TallyBook"
             android:exported="false" />
         <activity

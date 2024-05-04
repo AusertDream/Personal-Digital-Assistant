@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/agendaYear"
+        android:icon="@drawable/calendar"
+        android:title="@string/nian" />
+    <item
+        android:id="@+id/agendaMonth"
+        android:icon="@drawable/calendar"
+        android:title="@string/yue" />
+    <item
+        android:id="@+id/agendaDay"
+        android:icon="@drawable/calendar"
+        android:title="@string/ri" />
+</menu>

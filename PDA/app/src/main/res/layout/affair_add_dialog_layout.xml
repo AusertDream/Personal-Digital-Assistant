@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:rowCount="3"
+    android:columnCount="2"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="0"
+        android:layout_column="0"
+        android:layout_margin="5dp"
+        android:layout_marginEnd="3dp"
+        android:ems="3"
+        android:text="时间:"
+        android:gravity="end"
+        android:textSize="20sp" />
+    <Button
+        android:id="@+id/affairTimeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="0"
+        android:layout_column="1"
+        android:layout_marginStart="3dp"
+        android:text="选择时间"
+        android:textSize="12sp" />
+    <TextView
+        android:id="@+id/affairDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="1"
+        android:layout_column="0"
+        android:layout_margin="5dp"
+        android:layout_marginEnd="3dp"
+        android:ems="3"
+        android:gravity="end"
+        android:text="内容:"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/affairContentInput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="1"
+        android:layout_column="1"
+        android:ems="10"
+        android:layout_marginStart="3dp"
+        android:hint="内容"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/affairContentShow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="2"
+        android:layout_column="0"
+        android:layout_margin="5dp"
+        android:layout_marginEnd="3dp"
+        android:gravity="end"
+        android:text=""
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/affairConfirmButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="2"
+        android:layout_column="1"
+        android:layout_gravity="end"
+        android:text="确认添加"
+        android:textSize="12sp" />
+</GridLayout>
