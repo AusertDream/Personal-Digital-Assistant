@@ -3,6 +3,8 @@ package com.example.pda.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,6 +19,8 @@ import java.util.ArrayList;
 
 public class AgendaYearAdapter extends RecyclerView.Adapter<AgendaYearAdapter.AgendaYearViewHolder>{
     private ArrayList<YearAffair> agendaDetails;
+
+    private OnItemClickListener onItemClickListener;
 
     public AgendaYearAdapter(ArrayList<YearAffair> agendaDetails) {
         this.agendaDetails = agendaDetails;
@@ -38,6 +42,15 @@ public class AgendaYearAdapter extends RecyclerView.Adapter<AgendaYearAdapter.Ag
         time+=yearAffair.getMonth();
         holder.agendaShowTime.setText(time);
         holder.agendaDetail.setText(yearAffair.getAffair());
+        holder.affairDeleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(onItemClickListener!=null){
+                    int position = holder.getAdapterPosition();
+                    onItemClickListener.onDeleteClick(position);
+                }
+            }
+        });
     }
 
     @Override
@@ -48,11 +61,21 @@ public class AgendaYearAdapter extends RecyclerView.Adapter<AgendaYearAdapter.Ag
     public static class AgendaYearViewHolder extends RecyclerView.ViewHolder {
         TextView agendaShowTime;
         TextView agendaDetail;
+        ImageView affairDeleteButton;
 
         public AgendaYearViewHolder(@NonNull View itemView) {
             super(itemView);
             agendaShowTime = itemView.findViewById(R.id.agendaShowTime);
             agendaDetail = itemView.findViewById(R.id.agendaDetail);
+            affairDeleteButton = itemView.findViewById(R.id.affairDeleteButton);
         }
+    }
+
+    public interface OnItemClickListener {
+        void onDeleteClick(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 }

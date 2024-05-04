@@ -3,7 +3,7 @@ package com.example.pda.entity;
 public class YearAffair {
     private int year;
     private int month;
-    private String affair;
+    private String affair="NULL";
     public YearAffair(int year, int month, String affair) {
         this.year = year;
         this.month = month;

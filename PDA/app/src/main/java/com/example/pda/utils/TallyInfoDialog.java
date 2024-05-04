@@ -69,10 +69,8 @@ public class TallyInfoDialog extends AlertDialog {
                     dismiss();
                 }
                 else{
-                    if(addRecordHelp.getVisibility()==View.INVISIBLE){
-                        addRecordHelp.setText("输入不合法，请检查输入除了时间外是否为空，或者金额是否合法");
-                        addRecordHelp.setVisibility(View.VISIBLE);
-                    }
+                    addRecordHelp.setText("输入不合法，请检查输入除了时间外是否为空，或者金额是否合法");
+                    addRecordHelp.setVisibility(View.VISIBLE);
                 }
             }
         });
