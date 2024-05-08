@@ -1,66 +1,167 @@
 package com.example.pda.fragment;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.pda.R;
+import com.example.pda.adapter.AgendaMonthAdapter;
+import com.example.pda.adapter.AgendaYearAdapter;
+import com.example.pda.entity.MonthAffair;
+import com.example.pda.entity.YearAffair;
+import com.example.pda.utils.AffairAddDialog;
+import com.example.pda.utils.MonthlyAffairDialog;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AgendaMonth#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+
+
 public class AgendaMonth extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    View view;
+    Button addAgendaButton_month;
+    SwitchCompat delAgendaButton_month;
+    RecyclerView agendaYearRecyclerView_month;
+    AgendaMonthAdapter agendaMonthAdapter;
+    ArrayList<MonthAffair> agendaDetails_month = new ArrayList<>();
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public AgendaMonth() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AgendaMonth.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AgendaMonth newInstance(String param1, String param2) {
-        AgendaMonth fragment = new AgendaMonth();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_agenda_month, container, false);
+        view = inflater.inflate(R.layout.fragment_agenda_month, container, false);
+        initView();
+        initData();
+        initRecyclerView();
+        return view;
+    }
+
+    public void onResume(){
+        super.onResume();
+        //添加按钮的点击事件
+        addAgendaButton_month.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MonthlyAffairDialog affairAddDialog = new MonthlyAffairDialog(view.getContext());
+                affairAddDialog.show();
+                affairAddDialog.setOnDismissListener(new DialogInterface.OnDismissListener(){
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        int month,day;
+                        if(affairAddDialog.getAffairContent().equals("")){
+                            Toast.makeText(view.getContext(),"事项内容不能为空",Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        if(!affairAddDialog.getAffairTime().equals("")) {
+                            month = Integer.parseInt(affairAddDialog.getAffairTime().split(" ")[0]);
+                            day = Integer.parseInt(affairAddDialog.getAffairTime().split(" ")[1]);
+                            MonthAffair monthAffair = new MonthAffair(month, day, affairAddDialog.getAffairContent());
+                            int pos = getInsertPosition(agendaDetails_month, monthAffair);
+                            if (pos == agendaDetails_month.size()) {
+                                agendaDetails_month.add(monthAffair);
+                            } else {
+                                agendaDetails_month.add(pos, monthAffair);
+                            }
+                            agendaMonthAdapter.notifyItemInserted(pos);
+                        }
+                        affairAddDialog.dismiss();
+                    }
+                });
+
+                agendaMonthAdapter.setOnItemClickListener(new AgendaMonthAdapter.OnItemClickListener() {
+                    @Override
+                    public void onDeleteClick(int position) {
+                        if(delAgendaButton_month.isChecked()){
+                            AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                            builder.setTitle("警告");
+                            builder.setMessage("确认删除该事项吗？");
+                            builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    agendaDetails_month.remove(position);
+                                    agendaMonthAdapter.notifyItemRemoved(position);
+                                }
+                            });
+                            builder.setNegativeButton("取消",null);
+                            builder.show();
+                        }
+                        else{
+                            AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                            builder.setTitle("信息");
+                            builder.setMessage("想要删除先打开删除开关哦");
+                            builder.setPositiveButton("确认",null);
+                            builder.show();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    void initView(){
+        addAgendaButton_month = view.findViewById(R.id.addAgendaButton_month);
+        delAgendaButton_month = view.findViewById(R.id.delAgendaButton_month);
+        agendaYearRecyclerView_month = view.findViewById(R.id.agendaYearRecyclerView_month);
+    }
+
+    void initData(){
+        //TODO 从数据库中获取数据
+
+
+        agendaDetails_month.add(new MonthAffair(1,1,"fae"));
+        agendaDetails_month.add(new MonthAffair(2,2,"dfajie"));
+    }
+
+    void initRecyclerView(){
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
+        agendaYearRecyclerView_month.setLayoutManager(linearLayoutManager);
+        agendaMonthAdapter = new AgendaMonthAdapter(agendaDetails_month);
+        agendaYearRecyclerView_month.setAdapter(agendaMonthAdapter);
+    }
+
+
+    int getInsertPosition(@NonNull ArrayList<MonthAffair> data, MonthAffair monthAffair){
+        int pos = data.size()-1;
+        for(int i=0;i<data.size();i++){
+            int month = data.get(i).getMonth();
+            int day = data.get(i).getDay();
+            if(monthAffair.getMonth()>month){
+                if(i==data.size()-1){
+                    pos=data.size();
+                    break;
+                }
+            }
+            else if(monthAffair.getMonth()==month){
+                if(monthAffair.getDay()>=day){
+                    if(i==data.size()-1){
+                        pos=data.size();
+                        break;
+                    }
+                    else{
+                        continue;
+                    }
+                }
+                else{
+                    pos=i;
+                    break;
+                }
+            }
+            else{
+                pos=i;
+                break;
+            }
+        }
+        return pos;
     }
 }

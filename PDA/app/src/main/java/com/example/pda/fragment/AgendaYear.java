@@ -56,6 +56,10 @@ public class AgendaYear extends Fragment {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                             int year,month;
+                            if(affairAddDialog.getAffairContent().equals("")){
+                                Toast.makeText(view.getContext(),"事项内容不能为空",Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             if(!affairAddDialog.getAffairTime().equals("")) {
                                 year = Integer.parseInt(affairAddDialog.getAffairTime().split(" ")[0]);
                                 month = Integer.parseInt(affairAddDialog.getAffairTime().split(" ")[1]);
@@ -106,6 +110,7 @@ public class AgendaYear extends Fragment {
     void initData(){
         //TODO 从数据库中获取数据
 
+
         agendaDetails.add(new YearAffair(2021, 1, "2021年1月的事情"));
         agendaDetails.add(new YearAffair(2021, 2, "2021年2月的事情"));
         agendaDetails.add(new YearAffair(2021, 3, "2021年3月的事情"));
@@ -127,7 +132,13 @@ public class AgendaYear extends Fragment {
         for(int i=0;i<data.size();i++){
             int year = data.get(i).getYear();
             int month = data.get(i).getMonth();
-            if(yearAffair.getYear()>=year){
+            if(yearAffair.getYear()>year){
+                if(i==data.size()-1){
+                    pos=data.size();
+                    break;
+                }
+            }
+            else if(yearAffair.getYear()==year){
                 if(yearAffair.getMonth()>=month){
                     if(i==data.size()-1){
                         pos=data.size();
@@ -149,5 +160,4 @@ public class AgendaYear extends Fragment {
         }
         return pos;
     }
-
 }
