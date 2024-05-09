@@ -1,6 +1,7 @@
 package com.example.pda;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout nav_item_layout; //导航栏布局
     RecyclerView nav_recycler_view; //导航栏列表布局
 
+    String settingName;
+    boolean isAutoPlayWelcomeAudioEnabled;
+
 
 
     //onCreate执行一些数据初始化的工作
@@ -54,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);                    //默认的初始化
         setContentView(R.layout.activity_main);
+        settingName = "settings";
         initView();//初始化所有组件对象
         //初始化聊天记录
         initChatRecord();
@@ -123,6 +128,12 @@ public class MainActivity extends AppCompatActivity {
     }
     //播放进入语音
     public void playWelcomeAudio(){
+        SharedPreferences sharedPreferences = getSharedPreferences(settingName,MODE_PRIVATE);
+        isAutoPlayWelcomeAudioEnabled = sharedPreferences.getBoolean("isAutoPlayWelcomeAudioEnabled",true);
+
+        if(!isAutoPlayWelcomeAudioEnabled){
+            return;
+        }
         //建立监听器，监听是否播放完毕，如果完毕，释放资源
         MediaPlayer welcomeAudio = MediaPlayer.create(this,R.raw.duyanjuren_welcome);
         if(welcomeAudio!=null){
@@ -203,8 +214,8 @@ public class MainActivity extends AppCompatActivity {
         nav_item_list.add("日程表");
         nav_item_list.add("手账");
         nav_item_list.add("个人日志");
-        nav_item_list.add("拍照识别");
-        nav_item_list.add("定位");
+        /*nav_item_list.add("拍照识别");
+        nav_item_list.add("定位");*/
         nav_item_list.add("设置");
         nav_item_list.add("关于");
         //设置导航栏布局管理器

@@ -53,6 +53,14 @@ public class NavAdapter extends RecyclerView.Adapter<NavAdapter.ViewHolder>{
                     Intent intent = new Intent(v.getContext(),com.example.pda.agenda.class);
                     v.getContext().startActivity(intent);
                 }
+                else if(clickedContent.equals("设置")){
+                    Intent intent = new Intent(v.getContext(),com.example.pda.SettingsActivity.class);
+                    v.getContext().startActivity(intent);
+                }
+                else if(clickedContent.equals("关于")){
+                    Intent intent = new Intent(v.getContext(),com.example.pda.AboutActivity.class);
+                    v.getContext().startActivity(intent);
+                }
                 else {
                     Toast.makeText(v.getContext(), "这个还没做（", Toast.LENGTH_SHORT).show();
                 }

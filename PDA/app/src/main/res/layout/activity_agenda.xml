@@ -14,9 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/blue"
-        android:layout_weight="1"
-        >
-
+        android:layout_weight="1">
         <ImageView
             android:id="@+id/backButtonFromAgenda"
             android:layout_width="70dp"
@@ -31,8 +29,6 @@
             android:textColor="@color/white"
             android:textSize="40sp"
             android:textStyle="bold" />
-
-
     </LinearLayout>
 
     <androidx.fragment.app.FragmentContainerView

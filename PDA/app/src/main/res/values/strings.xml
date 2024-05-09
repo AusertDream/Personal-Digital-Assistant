@@ -20,4 +20,26 @@
     <string name="ri">日</string>
     <string name="delete">删除</string>
     <string name="add">添加</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="pda">\ \ \ \ \ \ \ 关\ \ \ \ \ \ \ 于</string>
+    <string name="settings">\ \ \ \ \ \ \ 设\ \ \ \ \ \ \ \ 置</string>
+    <string name="about_content">
+        PDA，个人数字助理，旨在为用户提供日常生活中的便捷服务。
+        期初其实是为了能够实现一个能够和二次元老婆互动的软件。主要还是想实现和月下老婆的语音互动。
+    </string>
 </resources>
