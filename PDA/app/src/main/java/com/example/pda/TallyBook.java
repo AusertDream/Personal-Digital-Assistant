@@ -7,6 +7,7 @@ import static java.lang.Math.abs;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.LayoutInflater;
@@ -31,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pda.adapter.TallyExpenseAdapter;
 import com.example.pda.adapter.TallyIncomeAdapter;
+import com.example.pda.database.PDADataHelper;
 import com.example.pda.entity.TallyRecord;
 import com.example.pda.utils.FormatedTime;
 import com.example.pda.utils.TallyInfoDialog;
@@ -58,6 +60,8 @@ public class TallyBook extends AppCompatActivity {
     TextView tv_expense; //支出总额
     TextView tv_balance; //结余
     TextView tv_comment;//Ray评
+
+    PDADataHelper mHelper;
 
     //TallyRecord
     ArrayList<TallyRecord> incomeRecordList = new ArrayList<>();
@@ -149,6 +153,12 @@ public class TallyBook extends AppCompatActivity {
 
     }
 
+    protected void onStop(){
+        super.onStop();
+        mHelper.closeWriteLink();
+        mHelper.closeReadLink();
+    }
+
 
 
     void initView(){
@@ -166,6 +176,9 @@ public class TallyBook extends AppCompatActivity {
         tv_balance = findViewById(R.id.tv_balance);
         tv_comment = findViewById(R.id.tv_comment);
         timeMore = findViewById(R.id.timeMore);
+        mHelper = PDADataHelper.getInstance(this);
+        SQLiteDatabase readDB = mHelper.openReadLink();
+        SQLiteDatabase writeDB = mHelper.openWriteLink();
     }
     void setAutoTally(boolean isAutoTally){
         //TODO:设置自动记账功能
@@ -190,6 +203,7 @@ public class TallyBook extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         TallyRecord tmp = incomeRecordList.get(position);
                         showIncomeAndExpense(tmp.getAmount(),3);
+                        mHelper.deleteIncome(tmp);
                         incomeRecordList.remove(position);
                         incomeAdapter.notifyItemRemoved(position);
                     }
@@ -211,6 +225,7 @@ public class TallyBook extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         TallyRecord tmp = expenseRecordList.get(position);
                         showIncomeAndExpense(tmp.getAmount(),4);
+                        mHelper.deleteExpense(tmp);
                         expenseRecordList.remove(position);
                         expenseAdapter.notifyItemRemoved(position);
                     }
@@ -221,8 +236,9 @@ public class TallyBook extends AppCompatActivity {
         });
     }
     void initTallyRecord(){
-        //TODO 从数据库获取数据
 
+        incomeRecordList = mHelper.selectIncomeAll();
+        expenseRecordList = mHelper.selectExpenseAll();
         //初始化总收支
         initIncomeAndExpense();
     }
@@ -310,11 +326,13 @@ public class TallyBook extends AppCompatActivity {
                      //分类处理
                      if (record.getAmount() > 0) {
                          incomeRecordList.add(record);
+                         mHelper.insertIncome(record);
                          incomeAdapter.notifyItemInserted(incomeRecordList.size() - 1);
                          incomeRecyclerView.scrollToPosition(incomeRecordList.size() - 1);
                          showIncomeAndExpense(record.getAmount(),1);
                      } else if (record.getAmount() < 0) {
                          expenseRecordList.add(record);
+                         mHelper.insertExpense(record);
                          expenseAdapter.notifyItemInserted(expenseRecordList.size() - 1);
                          expenseRecyclerView.scrollToPosition(expenseRecordList.size() - 1);
                          showIncomeAndExpense(record.getAmount(),2);

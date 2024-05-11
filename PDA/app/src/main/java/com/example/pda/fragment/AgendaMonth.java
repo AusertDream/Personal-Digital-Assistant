@@ -1,6 +1,7 @@
 package com.example.pda.fragment;
 
 import android.content.DialogInterface;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import com.example.pda.R;
 import com.example.pda.adapter.AgendaMonthAdapter;
 import com.example.pda.adapter.AgendaYearAdapter;
+import com.example.pda.database.PDADataHelper;
 import com.example.pda.entity.MonthAffair;
 import com.example.pda.entity.YearAffair;
 import com.example.pda.utils.AffairAddDialog;
@@ -35,6 +37,8 @@ public class AgendaMonth extends Fragment {
     RecyclerView agendaYearRecyclerView_month;
     AgendaMonthAdapter agendaMonthAdapter;
     ArrayList<MonthAffair> agendaDetails_month = new ArrayList<>();
+
+    PDADataHelper mHelper = null;
 
 
     @Override
@@ -68,11 +72,12 @@ public class AgendaMonth extends Fragment {
                             day = Integer.parseInt(affairAddDialog.getAffairTime().split(" ")[1]);
                             MonthAffair monthAffair = new MonthAffair(month, day, affairAddDialog.getAffairContent());
                             int pos = getInsertPosition(agendaDetails_month, monthAffair);
-                            if (pos == agendaDetails_month.size()) {
+                            if (pos == agendaDetails_month.size()|| agendaDetails_month.isEmpty()) {
                                 agendaDetails_month.add(monthAffair);
                             } else {
                                 agendaDetails_month.add(pos, monthAffair);
                             }
+                            mHelper.insertMonthAffair(monthAffair);
                             agendaMonthAdapter.notifyItemInserted(pos);
                         }
                         affairAddDialog.dismiss();
@@ -89,6 +94,7 @@ public class AgendaMonth extends Fragment {
                             builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    mHelper.deleteMonthAffair(agendaDetails_month.get(position));
                                     agendaDetails_month.remove(position);
                                     agendaMonthAdapter.notifyItemRemoved(position);
                                 }
@@ -109,6 +115,12 @@ public class AgendaMonth extends Fragment {
         });
     }
 
+    public void onStop(){
+        super.onStop();
+        mHelper.closeWriteLink();
+        mHelper.closeReadLink();
+    }
+
     void initView(){
         addAgendaButton_month = view.findViewById(R.id.addAgendaButton_month);
         delAgendaButton_month = view.findViewById(R.id.delAgendaButton_month);
@@ -116,11 +128,10 @@ public class AgendaMonth extends Fragment {
     }
 
     void initData(){
-        //TODO 从数据库中获取数据
-
-
-        agendaDetails_month.add(new MonthAffair(1,1,"fae"));
-        agendaDetails_month.add(new MonthAffair(2,2,"dfajie"));
+        mHelper=PDADataHelper.getInstance(view.getContext());
+        SQLiteDatabase dbRead = mHelper.openReadLink();
+        SQLiteDatabase dbWrite = mHelper.openWriteLink();
+        agendaDetails_month = mHelper.selectMonthAffairAll();
     }
 
     void initRecyclerView(){

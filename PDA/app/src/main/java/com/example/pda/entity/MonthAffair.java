@@ -9,6 +9,13 @@ public class MonthAffair {
         this.day = day;
         this.affair = affair;
     }
+
+    public MonthAffair() {
+        month=0;
+        day=0;
+        affair="NULL";
+    }
+
     public int getMonth() {
         return month;
     }

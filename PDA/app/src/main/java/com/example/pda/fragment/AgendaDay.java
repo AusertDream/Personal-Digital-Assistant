@@ -1,6 +1,7 @@
 package com.example.pda.fragment;
 
 import android.content.DialogInterface;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.pda.R;
 import com.example.pda.adapter.AgendaYearAdapter;
+import com.example.pda.database.PDADataHelper;
 import com.example.pda.entity.DayAffair;
 import com.example.pda.adapter.AgendaDayAdapter;
 import com.example.pda.entity.YearAffair;
@@ -35,6 +37,7 @@ public class AgendaDay extends Fragment {
     AgendaDayAdapter agendaDayAdapter;
 
     ArrayList<DayAffair> agendaDetails_day = new ArrayList<>();
+    PDADataHelper mHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,7 +69,13 @@ public class AgendaDay extends Fragment {
                             minute = Integer.parseInt(dailyAffairAddDialog.getAffairTime().split(":")[1]);
                             DayAffair dayAffair = new DayAffair(hour, minute, dailyAffairAddDialog.getAffairContent());
                             int pos = getInsertPosition(agendaDetails_day,dayAffair);
-                            agendaDetails_day.add(pos, dayAffair);
+                            if(pos==agendaDetails_day.size()||agendaDetails_day.isEmpty()){
+                                agendaDetails_day.add(dayAffair);
+                            }
+                            else {
+                                agendaDetails_day.add(pos, dayAffair);
+                            }
+                            mHelper.insertDayAffair(dayAffair);
                             agendaDayAdapter.notifyItemInserted(pos);
                         }
                     }
@@ -83,6 +92,7 @@ public class AgendaDay extends Fragment {
                     builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            mHelper.deleteDayAffair(agendaDetails_day.get(position));
                             agendaDetails_day.remove(position);
                             agendaDayAdapter.notifyItemRemoved(position);
                         }
@@ -102,6 +112,12 @@ public class AgendaDay extends Fragment {
 
     }
 
+    public void onStop(){
+        super.onStop();
+        mHelper.closeReadLink();
+        mHelper.closeWriteLink();
+    }
+
     void initView(){
         addAgendaButton_day = view.findViewById(R.id.addAgendaButton_day);
         delAgendaButton_day = view.findViewById(R.id.delAgendaButton_day);
@@ -109,11 +125,10 @@ public class AgendaDay extends Fragment {
     }
 
     void initData(){
-        //TODO 从数据库中获取数据
-
-        agendaDetails_day.add(new DayAffair(13, 30, "吃饭"));
-        agendaDetails_day.add(new DayAffair(14, 30, "睡觉"));
-        agendaDetails_day.add(new DayAffair(15, 30, "打豆豆"));
+        mHelper = PDADataHelper.getInstance(view.getContext());
+        SQLiteDatabase dbRead = mHelper.openReadLink();
+        SQLiteDatabase dbWrite = mHelper.openWriteLink();
+        agendaDetails_day = mHelper.selectDayAffairAll();
     }
 
     void initRecycleView(){

@@ -1,6 +1,7 @@
 package com.example.pda.fragment;
 
 import android.content.DialogInterface;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.pda.R;
 import com.example.pda.adapter.AgendaYearAdapter;
+import com.example.pda.database.PDADataHelper;
 import com.example.pda.entity.YearAffair;
 import com.example.pda.utils.AffairAddDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -32,6 +34,8 @@ public class AgendaYear extends Fragment {
     RecyclerView agendaYearRecyclerView;
     AgendaYearAdapter agendaYearAdapter;
     ArrayList<YearAffair> agendaDetails = new ArrayList<>();
+
+    PDADataHelper mHelper=null;
     View view;
 
     @Override
@@ -65,11 +69,12 @@ public class AgendaYear extends Fragment {
                                 month = Integer.parseInt(affairAddDialog.getAffairTime().split(" ")[1]);
                                 YearAffair yearAffair = new YearAffair(year, month, affairAddDialog.getAffairContent());
                                 int pos = getInsertPosition(agendaDetails, yearAffair);
-                                if (pos == agendaDetails.size()) {
+                                if (pos == agendaDetails.size()|| agendaDetails.isEmpty()) {
                                     agendaDetails.add(yearAffair);
                                 } else {
                                     agendaDetails.add(pos, yearAffair);
                                 }
+                                mHelper.insertYearAffair(yearAffair);
                                 agendaYearAdapter.notifyItemInserted(pos);
                             }
                             affairAddDialog.dismiss();
@@ -89,6 +94,7 @@ public class AgendaYear extends Fragment {
                     builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            mHelper.deleteYearAffair(agendaDetails.get(position));
                             agendaDetails.remove(position);
                             agendaYearAdapter.notifyItemRemoved(position);
                         }
@@ -108,12 +114,10 @@ public class AgendaYear extends Fragment {
     }
 
     void initData(){
-        //TODO 从数据库中获取数据
-
-
-        agendaDetails.add(new YearAffair(2021, 1, "2021年1月的事情"));
-        agendaDetails.add(new YearAffair(2021, 2, "2021年2月的事情"));
-        agendaDetails.add(new YearAffair(2021, 3, "2021年3月的事情"));
+        mHelper = PDADataHelper.getInstance(view.getContext());
+        SQLiteDatabase dbr = mHelper.openReadLink();
+        SQLiteDatabase dbw = mHelper.openWriteLink();
+        agendaDetails = mHelper.selectYearAffairAll();
     }
     void initView(){
         addAgendaButton = view.findViewById(R.id.addAgendaButton);

@@ -44,7 +44,7 @@ public class AgendaMonthAdapter extends RecyclerView.Adapter<AgendaMonthAdapter.
         }
         time=month+"."+day;
         holder.agendaShowTime.setText(time);
-
+        holder.agendaDetail.setText(monthAffair.getAffair());
         holder.affairDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

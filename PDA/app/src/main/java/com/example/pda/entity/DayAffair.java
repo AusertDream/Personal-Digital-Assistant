@@ -9,6 +9,13 @@ public class DayAffair {
         this.minute = minute;
         this.affair = affair;
     }
+
+    public DayAffair() {
+        hour=0;
+        minute=0;
+        affair="NULL";
+    }
+
     public void setAffair(String affair) {
         this.affair = affair;
     }
