@@ -114,8 +114,8 @@ public class AgendaDay extends Fragment {
 
     public void onStop(){
         super.onStop();
-        mHelper.closeReadLink();
-        mHelper.closeWriteLink();
+        /*mHelper.closeReadLink();
+        mHelper.closeWriteLink();*/
     }
 
     void initView(){

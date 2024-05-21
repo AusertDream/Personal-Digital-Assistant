@@ -23,6 +23,7 @@ import java.util.Date;
 
 import com.example.pda.adapter.ChatAdapter;
 import com.example.pda.adapter.NavAdapter;
+import com.example.pda.database.PDADataHelper;
 import com.example.pda.entity.Message_WithBot;
 import com.example.pda.utils.FormatedTime;
 
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     String settingName;
     boolean isAutoPlayWelcomeAudioEnabled;
+    PDADataHelper mHelper;
 
 
 
@@ -59,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);                    //默认的初始化
         setContentView(R.layout.activity_main);
         settingName = "settings";
+        mHelper = PDADataHelper.getInstance(this);
         initView();//初始化所有组件对象
         //初始化聊天记录
         initChatRecord();
@@ -76,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
     //resume执行一些用户可见，可交互的工作
     public void onResume(){
         super.onResume();
-
         //处理linkstart按钮的点击事件
         linkStart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,7 +110,9 @@ public class MainActivity extends AppCompatActivity {
                 String curTime = new FormatedTime().getFormatedTime(1);
                 if(!inputText.equals("")) {
                     //将消息添加进messageList中
+                    mHelper.openWriteLink();
                     Message_WithBot new_message = new Message_WithBot(inputText, curTime, "user");
+                    mHelper.insertChatRecord(new_message);
                     messageList.add(new_message);
                     chatadapter.notifyItemInserted(messageList.size() - 1);
                     chatView.scrollToPosition(messageList.size() - 1);
@@ -117,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
                     //将回复添加进messageList中
                     curTime = new FormatedTime().getFormatedTime(1);
                     Message_WithBot bot_message = new Message_WithBot(botResponse, curTime, "bot");
+                    mHelper.insertChatRecord(bot_message);
                     messageList.add(bot_message);
                     chatadapter.notifyItemInserted(messageList.size() - 1);
                     chatView.scrollToPosition(messageList.size() - 1);
@@ -173,6 +178,10 @@ public class MainActivity extends AppCompatActivity {
         talkLayout.setVisibility(View.VISIBLE);
     }
     public void initChatRecord(){
+        mHelper.openReadLink();
+        mHelper.openWriteLink();
+        messageList = mHelper.selectChatRecordAll();
+
         //bot初始信息添加进messagelist中去
         String curTime = new FormatedTime().getFormatedTime(1);
         Message_WithBot default_message = new Message_WithBot("你好，我叫bot，有什么可以帮助你的吗？",curTime,"bot");
@@ -183,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
         //创建适配器，用于给聊天框存放初始数据
         chatadapter = new ChatAdapter(messageList,mContext);
         chatView.setAdapter(chatadapter);
+        chatView.scrollToPosition(messageList.size()-1);
     }
     @NonNull
     public String getChatResponse(String inputText) {
@@ -213,8 +223,8 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String> nav_item_list = new ArrayList<>();
         nav_item_list.add("日程表");
         nav_item_list.add("手账");
-        nav_item_list.add("个人日志");
-        /*nav_item_list.add("拍照识别");
+        /*nav_item_list.add("个人日志");
+        nav_item_list.add("拍照识别");
         nav_item_list.add("定位");*/
         nav_item_list.add("设置");
         nav_item_list.add("关于");

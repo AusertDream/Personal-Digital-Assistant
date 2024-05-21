@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.pda.entity.DayAffair;
+import com.example.pda.entity.Message_WithBot;
 import com.example.pda.entity.MonthAffair;
 import com.example.pda.entity.TallyRecord;
 import com.example.pda.entity.YearAffair;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 
 public class PDADataHelper extends SQLiteOpenHelper {
 
-    private static final int dataBaseVersion = 3;
+    private static final int dataBaseVersion = 4;
     private static final String dbName = "PDAData.db" ;
 
     //表名
@@ -25,6 +26,8 @@ public class PDADataHelper extends SQLiteOpenHelper {
     private static final String agendaDayTableName = "agendaDayTable"; //日程表
     private static final String agendaMonthTableName = "agendaMonthTable"; //月程表
     private static final String agendaYearTableName = "agendaYearTable"; //年程表
+
+    private static final String chatRecordTableName = "chatRecordTable"; //聊天记录表
 
     private static PDADataHelper mHelper = null;
     SQLiteDatabase mRDB = null;
@@ -80,13 +83,8 @@ public class PDADataHelper extends SQLiteOpenHelper {
                 + expenseTableName
                 +"(id INTEGER PRIMARY KEY AUTOINCREMENT, amount REAL, title TEXT, time TEXT )";
         db.execSQL(sql);
-
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         //建立日程表
-        String sql = "CREATE TABLE IF NOT EXISTS "
+        sql = "CREATE TABLE IF NOT EXISTS "
                 + agendaDayTableName
                 + " (id INTEGER PRIMARY KEY AUTOINCREMENT, hour INTEGER, minute INTEGER, affair TEXT) ";
         db.execSQL(sql);
@@ -99,6 +97,14 @@ public class PDADataHelper extends SQLiteOpenHelper {
         sql = "CREATE TABLE IF NOT EXISTS "
                 + agendaYearTableName
                 + " (id INTEGER PRIMARY KEY AUTOINCREMENT, year INTEGER, month INTEGER, affair TEXT) ";
+        db.execSQL(sql);
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        String sql = "CREATE TABLE IF NOT EXISTS "
+                + chatRecordTableName
+                + " (id INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT, time TEXT, sender TEXT) ";
         db.execSQL(sql);
     }
 
@@ -245,5 +251,32 @@ public class PDADataHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         return res;
+    }
+
+    public long insertChatRecord(Message_WithBot message){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("content",message.getContent());
+        contentValues.put("time",message.getTime());
+        contentValues.put("sender",message.getSender());
+        long result = mWDB.insert(chatRecordTableName,null,contentValues);
+        return result;
+    }
+
+    public ArrayList<Message_WithBot> selectChatRecordAll(){
+        ArrayList<Message_WithBot> res = new ArrayList<>();
+        Cursor cursor = mRDB.query(chatRecordTableName,null,null,null,null,null,null);
+        while (cursor.moveToNext()){
+            Message_WithBot message = new Message_WithBot();
+            message.setContent(cursor.getString(1));
+            message.setTime(cursor.getString(2));
+            message.setSender(cursor.getString(3));
+            res.add(message);
+        }
+        cursor.close();
+        return res;
+    }
+
+    public void deleteChatRecordAll(){
+        mWDB.delete(chatRecordTableName,null,null);
     }
 }
